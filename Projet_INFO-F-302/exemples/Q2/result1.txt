@@ -1,0 +1,3 @@
+groupe 1: 1 2 6 7
+groupe 2: 2 3 8 7
+groupe 3: 4 5 8 7

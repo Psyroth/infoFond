@@ -1,0 +1,6 @@
+groupe 1: 20 6 3 16
+groupe 2: 7 19 18 17
+groupe 3: 13 8 11 15
+groupe 4: 4 2 14 12
+groupe 5: 1 10 9 5
+groupe 6: 

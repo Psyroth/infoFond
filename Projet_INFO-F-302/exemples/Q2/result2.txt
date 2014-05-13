@@ -1,0 +1,8 @@
+groupe 1: 1 8 13 18
+groupe 2: 2 9 14 18
+groupe 3: 3 10 15 19
+groupe 4: 4 10 15 19
+groupe 5: 5 11 13 20
+groupe 6: 6 12 16 20
+groupe 7: 7 15 17 20
+groupe 8:
