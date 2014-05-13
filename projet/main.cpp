@@ -16,6 +16,7 @@ int main(int argc, char **argv)
     std::string constraints(argv[1]);
     std::string output(argv[2]);
 
+    
     // Le niveau de syntaxe est donné par le numéro de question : le fichier
     // exécutable s'appelle QuestionX.bin, avec X compris entre 1 et 4.
     int syntax_level = 4;   // Tester avec toutes les fonctionnalités
