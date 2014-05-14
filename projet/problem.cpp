@@ -101,3 +101,37 @@ void Problem::solve()
         std::cout<<"pas ok"<<std::endl;
     }
 }
+
+void Problem::printResult()
+{
+    std::string res;
+    for(int group=0; group<_group_nb; ++group)
+    {
+        res += "Groupe " + std::to_string(group) + " : ";
+        for(int instrument=0; instrument<_instrument_nb; ++instrument)
+        {
+            std::vector<int> musicians_for_instrument_in_group;
+            for(int musician=0; musician<_musician_nb; ++musician)
+            {
+                if(_solver.model[encoding(musician, instrument, group)] == l_True)
+                {
+                    musicians_for_instrument_in_group.push_back(musician);
+                }
+            }
+            if(musicians_for_instrument_in_group.size() > 1)
+            {
+                std::cout<<"Plusieurs musiciens possibles pour la place : groupe("<<group<<"), "<<instrument<<")"<<std::endl;
+            }
+            else if(musicians_for_instrument_in_group.size() == 1)
+            {
+                res += std::to_string(musicians_for_instrument_in_group[0]) + " ";
+            }
+            else// == 0
+            {
+                std::cout<<"Pas de musicien pour la place : groupe("<<group<<"), "<<instrument<<")"<<std::endl;
+            }
+        }
+        res += "\n";
+    }
+    std::cout<<res<<std::endl;
+}

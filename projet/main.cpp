@@ -38,5 +38,6 @@ int main(int argc, char **argv)
     Problem problem(parser);
 
     problem.solve();
+    problem.printResult();
 //     problem.write(output);
 }

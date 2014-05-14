@@ -11,6 +11,7 @@ public:
     
     int encoding(int musician, int instrument, int group);
     void solve();
+    void printResult();
     
 private:
     Solver _solver;
