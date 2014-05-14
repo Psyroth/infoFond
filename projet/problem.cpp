@@ -1,4 +1,5 @@
 #include "problem.h"
+#include <iostream>
 
 Problem::Problem(Parser parser):
 _parser(parser),
@@ -17,15 +18,15 @@ _group_nb(_parser.getGroupNb())
     //un musicien est dans au moins un groupe pour un instrument qu'il sait jouer
     for(int musician = 0; musician < _musician_nb; ++musician)
     {
+        vec<Lit> lits;
         for(int group = 0; group < _group_nb; ++group)
         {
-            vec<Lit> lits;
             for(int indexOfInstrumentList = 0; indexOfInstrumentList < _parser.instrumentsOfUser(musician).size(); ++indexOfInstrumentList)
             {
                 lits.push(Lit(encoding(musician, _parser.instrumentsOfUser(musician)[indexOfInstrumentList], group)));
             }
-            _solver.addClause(lits);
         }
+        _solver.addClause(lits);
     }
     
     //pas deux fois le meme musicien dans un meme groupe
@@ -91,4 +92,12 @@ int Problem::encoding(int musician, int instrument, int group)
 void Problem::solve()
 {
     _solver.solve();
+    if (_solver.okay())
+    {
+        std::cout<<"ok"<<std::endl;
+    }
+    else
+    {
+        std::cout<<"pas ok"<<std::endl;
+    }
 }
