@@ -1,7 +1,7 @@
-#include "problem.h"
+#include "problem1.h"
 #include <iostream>
 
-Problem::Problem(Parser parser):
+Problem1::Problem1(Parser1 parser):
 _parser(parser),
 _musician_nb(_parser.getMusicianNb()),
 _instrument_nb(_parser.getInstrumentNb()),
@@ -36,23 +36,23 @@ _group_nb(_parser.getGroupNb())
     }
     
     //pas deux fois le meme musicien dans un meme groupe
-    for(int group = 0; group < _group_nb; ++group)
-    {
-        for(int musician = 0; musician < _musician_nb; ++musician)
-        {
-            //attention, ici, on ajoute peut etre 2 fois les meme clauses, je ne sais pas si c'est un probleme
-            for(int instrument1 = 0; instrument1 < _instrument_nb; ++instrument1)
-            {
-                for(int instrument2 = 0; instrument2 < _instrument_nb; ++instrument2)
-                {
-                    if(instrument1 != instrument2)
-                    {
-                        _solver.addBinary(~Lit(encodingX(musician, instrument1, group)), ~Lit(encodingX(musician, instrument2, group)));
-                    }
-                }
-            }
-        }
-    }
+//     for(int group = 0; group < _group_nb; ++group)
+//     {
+//         for(int musician = 0; musician < _musician_nb; ++musician)
+//         {
+//             //attention, ici, on ajoute peut etre 2 fois les meme clauses, je ne sais pas si c'est un probleme
+//             for(int instrument1 = 0; instrument1 < _instrument_nb; ++instrument1)
+//             {
+//                 for(int instrument2 = 0; instrument2 < _instrument_nb; ++instrument2)
+//                 {
+//                     if(instrument1 != instrument2)
+//                     {
+//                         _solver.addBinary(~Lit(encodingX(musician, instrument1, group)), ~Lit(encodingX(musician, instrument2, group)));
+//                     }
+//                 }
+//             }
+//         }
+//     }
     
     //pas deux fois le meme musicien dans 2 groupes differents
     
@@ -133,7 +133,7 @@ _group_nb(_parser.getGroupNb())
 }
 
 
-int Problem::encodingX(int musician, int instrument, int group)
+int Problem1::encodingX(int musician, int instrument, int group)
 {
     int res = _instrument_nb * _group_nb * musician +
     _group_nb * instrument +
@@ -141,13 +141,13 @@ int Problem::encodingX(int musician, int instrument, int group)
     return res;
 }
 
-int Problem::encodingA(int group)
+int Problem1::encodingA(int group)
 {
     int res = (_musician_nb * _instrument_nb * _group_nb) + group;
     return res;
 }
 
-void Problem::solve()
+void Problem1::solve()
 {
     _solver.solve();
     if (_solver.okay())
@@ -160,7 +160,7 @@ void Problem::solve()
     }
 }
 
-void Problem::printResult()
+void Problem1::printResult()
 {
     std::string res;
     for(int group=0; group<_group_nb; ++group)
