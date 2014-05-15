@@ -9,7 +9,8 @@ class Problem
 public:
     Problem(Parser parser);
     
-    int encoding(int musician, int instrument, int group);
+    int encodingX(int musician, int instrument, int group);
+    int encodingA(int group);
     void solve();
     void printResult();
     

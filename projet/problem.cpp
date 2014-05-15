@@ -7,8 +7,14 @@ _musician_nb(_parser.getMusicianNb()),
 _instrument_nb(_parser.getInstrumentNb()),
 _group_nb(_parser.getGroupNb())
 {
-    //ajout des propositions
+    //ajout des variables X(a,b,c)
     for(int i=0; i < _musician_nb * _instrument_nb * _group_nb; ++i)
+    {
+        _solver.newVar();
+    }
+    
+    //ajout des variables A(g)
+    for(int i=0; i<_group_nb; ++i)
     {
         _solver.newVar();
     }
@@ -23,7 +29,7 @@ _group_nb(_parser.getGroupNb())
         {
             for(int indexOfInstrumentList = 0; indexOfInstrumentList < _parser.instrumentsOfUser(musician).size(); ++indexOfInstrumentList)
             {
-                lits.push(Lit(encoding(musician, _parser.instrumentsOfUser(musician)[indexOfInstrumentList], group)));
+                lits.push(Lit(encodingX(musician, _parser.instrumentsOfUser(musician)[indexOfInstrumentList], group)));
             }
         }
         _solver.addClause(lits);
@@ -41,7 +47,7 @@ _group_nb(_parser.getGroupNb())
                 {
                     if(instrument1 != instrument2)
                     {
-                        _solver.addBinary(~Lit(encoding(musician, instrument1, group)), ~Lit(encoding(musician, instrument2, group)));
+                        _solver.addBinary(~Lit(encodingX(musician, instrument1, group)), ~Lit(encodingX(musician, instrument2, group)));
                     }
                 }
             }
@@ -73,19 +79,71 @@ _group_nb(_parser.getGroupNb())
             {
                 for(int musician = 0; musician < _musician_nb; ++musician)
                 {
-                    _solver.addBinary(~Lit(encoding(musician, coords[index][0], coords[index][1])), ~Lit(encoding(musician, coords[index2][0], coords[index2][1])));
+                    _solver.addBinary(~Lit(encodingX(musician, coords[index][0], coords[index][1])), ~Lit(encodingX(musician, coords[index2][0], coords[index2][1])));
                 }
             }
         }
     }
+    
+    //pas 2 musiciens pour le meme instrument dans le meme groupe
+    for(int group=0; group<_group_nb; ++group)
+    {
+        for(int instrument=0; instrument<_instrument_nb; ++instrument)
+        {
+            for(int musician1=0; musician1<_musician_nb; ++musician1)
+            {
+                for(int musician2=0; musician2<_musician_nb; ++musician2)
+                {
+                    if(musician1!=musician2)
+                    {
+                        _solver.addBinary(~Lit(encodingX(musician1, instrument, group)), ~Lit(encodingX(musician2, instrument, group)));
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    //tout groupe est complet ou vide
+    for(int group=0; group<_group_nb; ++group)
+    {
+        for(int musician=0; musician<_musician_nb; ++musician)
+        {
+            for(int instrument=0; instrument<_instrument_nb; ++instrument)
+            {
+                _solver.addBinary(~Lit(encodingX(musician, instrument, group)), ~Lit(encodingA(group)));
+            }
+        }
+    }
+    
+    for(int group=0; group<_group_nb; ++group)
+    {
+        for(int instrument=0; instrument<_instrument_nb; ++instrument)
+        {
+            vec<Lit> lits;
+            lits.push(Lit(encodingA(group)));
+            for(int musician=0; musician<_musician_nb; ++musician)
+            {
+                lits.push(Lit(encodingX(musician, instrument, group)));
+            }
+            _solver.addClause(lits);
+        }
+    }
+    
 }
 
 
-int Problem::encoding(int musician, int instrument, int group)
+int Problem::encodingX(int musician, int instrument, int group)
 {
     int res = _instrument_nb * _group_nb * musician +
     _group_nb * instrument +
-    group + 1; 
+    group; 
+    return res;
+}
+
+int Problem::encodingA(int group)
+{
+    int res = (_musician_nb * _instrument_nb * _group_nb) + group;
     return res;
 }
 
@@ -107,28 +165,34 @@ void Problem::printResult()
     std::string res;
     for(int group=0; group<_group_nb; ++group)
     {
-        res += "Groupe " + std::to_string(group) + " : ";
+        res += "Groupe " + std::to_string(group+1) + " : ";
         for(int instrument=0; instrument<_instrument_nb; ++instrument)
         {
             std::vector<int> musicians_for_instrument_in_group;
             for(int musician=0; musician<_musician_nb; ++musician)
             {
-                if(_solver.model[encoding(musician, instrument, group)] == l_True)
+                if(_solver.model[encodingX(musician, instrument, group)] == l_True)
                 {
                     musicians_for_instrument_in_group.push_back(musician);
                 }
             }
             if(musicians_for_instrument_in_group.size() > 1)
             {
-                std::cout<<"Plusieurs musiciens possibles pour la place : groupe("<<group<<"), "<<instrument<<")"<<std::endl;
+                std::cout<<"Plusieurs musiciens possibles pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
+                for(std::vector<int>::iterator it=musicians_for_instrument_in_group.begin(); it!=musicians_for_instrument_in_group.end(); ++it)
+                {
+                    std::cout<<(*it)+1<<std::endl;
+                }
+                res += "* ";
             }
             else if(musicians_for_instrument_in_group.size() == 1)
             {
-                res += std::to_string(musicians_for_instrument_in_group[0]) + " ";
+                res += std::to_string(musicians_for_instrument_in_group[0]+1) + " ";
             }
             else// == 0
             {
-                std::cout<<"Pas de musicien pour la place : groupe("<<group<<"), "<<instrument<<")"<<std::endl;
+                std::cout<<"Pas de musicien pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
+                res += "* ";
             }
         }
         res += "\n";

@@ -39,7 +39,7 @@ Parser::Parser(std::string constraints, int syntax_level)
         
     }
     
-    std::cout<<_instruments_played[1][1]<<std::endl;
+    std::cout<<_instruments_played[0][0]<<std::endl;
     std::cout<<instrumentsOfUser(4)[0]<<std::endl;
     
 }
@@ -64,7 +64,8 @@ std::vector<int> Parser::convertStringToInt(std::vector<std::string> vec)
     std::vector<int> vec_int;
     for(std::vector<std::string>::iterator it=vec.begin(); it != vec.end(); ++it)
     {
-        vec_int.push_back(atoi(it->c_str()));
+        //on fait -1 car dans le fichier ca commence a 1 et ici on commence a 0
+        vec_int.push_back(atoi(it->c_str())-1);
     }
     return vec_int;
 }
