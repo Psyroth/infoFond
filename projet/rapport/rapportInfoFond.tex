@@ -1,0 +1,191 @@
+\documentclass[a4paper,10pt]{report}
+\usepackage[francais]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[left=2.5cm,top=2cm,right=2.5cm,nohead,nofoot]{geometry}
+
+\linespread{1.1}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \textbf{\textsc{UNIVERSIT\'E LIBRE DE BRUXELLES}}\\
+        \textbf{\textsc{Faculté des Sciences}}\\
+        \textbf{\textsc{Département d'Informatique}}
+
+        \vfill{}\vfill{}
+
+        \begin{center}
+            \Huge{Projet Informatique Fondamentale}
+        \end{center}
+        \Huge{\par}
+        \begin{center}
+            \large{
+                \textsc{Rosette} Arnaud \\
+                \textsc{Veranneman} \it{Philippe}
+            }
+        \end{center}
+        \Huge{\par}
+
+        \vfill{}\vfill{}
+
+        \vfill{}\vfill{}\enlargethispage{3cm}
+
+        \textbf{Année académique 2013~-~2014}
+    \end{center}
+\end{titlepage}
+
+
+\tableofcontents
+\pagebreak
+
+\section{Réponses aux parties A}
+
+\subsection{Question 1}
+
+$X_{a,b,c}$ = vrai ssi musicien a joue de l'instrument b dans le groupe c
+
+\subsubsection{Contrainte 1 : Un musicien est dans au moins un groupe (pour un instrument qu'il sait jouer)}
+
+
+( $instrumentsPlayed(a) \equiv$ la liste des instuments que a sait jouer )
+
+
+\underline{Pour tout} musicien $a \in M $, \underline{il existe} un groupe $c \in G$ tel que \underline{il existe} un instrument $b \in$ instumentsPlayed(a)  tel que $X_{a,b,c}$
+
+
+$\bigwedge \limits_{a=0}^{m}$ ( $\bigvee \limits_{c=0}^{k}$ $\bigvee \limits_{b \in instumentsPlayed(a) }$  $X_{a,b,c}$)
+
+
+
+\subsubsection{Contrainte 2 : Pas deux fois le même musicien dans un même groupe (au plus un même musicien dans un même groupe)}
+
+
+\underline{Pour tout} groupe $c \in G$, \underline{pour tout} musicien $a \in M $ tel que \underline{il n'existe pas} i,j $\in I$  tel que $i \neq j$ \underline{et} $X_{a,i,c}$ est vraie
+\underline{et} $X_{a,j,c}$ est vraie.
+
+
+$\bigwedge \limits_{c=0}^{k}$ $\bigwedge \limits_{a=0}^{m}$ $\neg$ [ $\bigvee \limits_{i,j \in (0..n); i\neq j}$ ( $X_{a,i,c}$ $\wedge$ $X_{a,j,c}$ )]
+
+
+$\equiv$ $\bigwedge \limits_{c=0}^{k}$ $\bigwedge \limits_{a=0}^{m}$  $\bigwedge \limits_{i,j \in (0..n); i\neq j}$ ( $\neg X_{a,i,c}$ $\vee $ $ \neg X_{a,j,c}$ )
+
+
+Pas besoin car incorporée dans la Contrainte 3.
+
+\subsubsection{Contrainte 3 : Pas deux fois le même musicien dans deux groupes différents et dans un même groupe}
+
+$\delta$ = ensemble des coordonnées [IxG]
+
+ $\bigvee \limits_{(i,j), (i',j') \in \delta ; i\neq i' ou j\neq j'}$ $\bigwedge \limits_{a=0}^{m}$ ( $\neg X_{a,i,j}$ $\vee $ $ \neg X_{a,i',j'}$ )
+
+\subsubsection{Contrainte 4 : Pas 2 musiciens pour le même instrument au sein d'un même groupe}
+ 
+\underline{Pour tout} groupe $c \in G$, \underline{pour tout} instrument $b \in I$ \underline{il n'existe pas} k,l $\in M$  tel que $k \neq l$ \underline{et} $X_{k,b,c}$ est vraie
+\underline{et} $X_{l,b,c}$ est vraie. 
+ 
+$\bigwedge \limits_{c=0}^{k}$ $\bigwedge \limits_{b=0}^{n}$ $\neg$ [ $\bigvee \limits_{k,l \in (0..m); k\neq l}$ ( $X_{k,b,c}$ $\wedge$ $X_{l,b,c}$ )]
+
+
+$\equiv$ $\bigwedge \limits_{c=0}^{k}$ $\bigwedge \limits_{b=0}^{n}$  $\bigwedge \limits_{k,l \in (0..m); k\neq l}$ ( $\neg X_{k,b,c}$ $\vee $ $ \neg X_{l,b,c}$ ) 
+ 
+ 
+\subsubsection{Contrainte 5 : Un groupe doit être soit complet soit vide} 
+ 
+\underline{Pour tout} groupe $g \in G$, \underline{pour tout} instrument $i \in I$ \underline{il existe} un musicien m tel que $X_{g,m,i}$  \underline{ou} $\neg$ (...)
+
+
+Nous définissons $actif_g$ : Un groupe est 'actif' lorsqu'il y a au moins un musicien dedans.
+
+$\forall g,m,i$ . $X_{g,m,i} \rightarrow actif_g \equiv \forall g,m,i : \neg X_{g,m,i} \wedge actif_g$
+
+$\bigwedge \limits_{g}$ $\bigwedge \limits_{m}$ $\bigwedge \limits_{i}$ ( $\neg$ $X_{m,i,g}$ $\wedge actif_g $ )
+ 
+$\bigwedge \limits_{g}$ $actif_g \rightarrow (\bigwedge \limits_{i} \bigvee \limits_{m} X_{m,i,g})$  (groupe complet)
+
+$\equiv \bigwedge \limits_{g} ( \neg actif_g \wedge \bigwedge \limits_{i} \bigvee \limits_{m} X_{m,i,g}) $
+
+$ a \vee () $
+ 
+ 
+\subsection{Question 2}
+
+Les contraintes sont les mêmes que celles de la Question 1 à part qu'un musicien peut maintenant appartenir à plusieurs groupes (selon son 'Max') donc C3 doit être modifiée.
+De plus on rajoute une contrainte qui précide qu'il ne peut pas être dans un groupe pour un instrument qu'il ne sait pas jouer.
+ 
+ 
+\subsubsection{Contrainte 1 : Un musicien est dans au moins un groupe (pour un instrument qu'il sait jouer)}
+
+
+( $instrumentsPlayed(a) \equiv$ la liste des instuments que a sait jouer )
+
+
+\underline{Pour tout} musicien $a \in M $, \underline{il existe} un groupe $c \in G$ tel que \underline{il existe} un instrument $b \in$ instumentsPlayed(a)  tel que $X_{a,b,c}$
+
+
+$\bigwedge \limits_{a=0}^{m}$ ( $\bigvee \limits_{c=0}^{k}$ $\bigvee \limits_{b \in instumentsPlayed(a) }$  $X_{a,b,c}$)
+
+
+
+\subsubsection{Contrainte 2 : Pas deux fois le même musicien dans un même groupe (au plus un même musicien dans un même groupe)}
+
+
+\underline{Pour tout} groupe $c \in G$, \underline{pour tout} musicien $a \in M $ tel que \underline{il n'existe pas} i,j $\in I$  tel que $i \neq j$ \underline{et} $X_{a,i,c}$ est vraie
+\underline{et} $X_{a,j,c}$ est vraie.
+
+
+$\bigwedge \limits_{c=0}^{k}$ $\bigwedge \limits_{a=0}^{m}$ $\neg$ [ $\bigvee \limits_{i,j \in (0..n); i\neq j}$ ( $X_{a,i,c}$ $\wedge$ $X_{a,j,c}$ )]
+
+
+$\equiv$ $\bigwedge \limits_{c=0}^{k}$ $\bigwedge \limits_{a=0}^{m}$  $\bigwedge \limits_{i,j \in (0..n); i\neq j}$ ( $\neg X_{a,i,c}$ $\vee $ $ \neg X_{a,j,c}$ )
+
+
+Pas besoin car incorporée dans la Contrainte 3.
+
+\subsubsection{Contrainte 3 : Pas deux fois le même musicien dans deux groupes différents et dans un même groupe}
+
+$\delta$ = ensemble des coordonnées [IxG]
+
+ $\bigvee \limits_{(i,j), (i',j') \in \delta ; i\neq i' ou j\neq j'}$ $\bigwedge \limits_{a=0}^{m}$ ( $\neg X_{a,i,j}$ $\vee $ $ \neg X_{a,i',j'}$ )
+!!!!!!!!!! a modifier? ou enlever? !!!!!!!!!!
+
+\subsubsection{Contrainte 4 : Pas 2 musiciens pour le même instrument au sein d'un même groupe}
+ 
+\underline{Pour tout} groupe $c \in G$, \underline{pour tout} instrument $b \in I$ \underline{il n'existe pas} k,l $\in M$  tel que $k \neq l$ \underline{et} $X_{k,b,c}$ est vraie
+\underline{et} $X_{l,b,c}$ est vraie. 
+ 
+$\bigwedge \limits_{c=0}^{k}$ $\bigwedge \limits_{b=0}^{n}$ $\neg$ [ $\bigvee \limits_{k,l \in (0..m); k\neq l}$ ( $X_{k,b,c}$ $\wedge$ $X_{l,b,c}$ )]
+
+
+$\equiv$ $\bigwedge \limits_{c=0}^{k}$ $\bigwedge \limits_{b=0}^{n}$  $\bigwedge \limits_{k,l \in (0..m); k\neq l}$ ( $\neg X_{k,b,c}$ $\vee $ $ \neg X_{l,b,c}$ ) 
+
+
+\subsubsection{Contrainte 5 : Un groupe doit être soit complet soit vide} 
+ 
+\underline{Pour tout} groupe $g \in G$, \underline{pour tout} instrument $i \in I$ \underline{il existe} un musicien m tel que $X_{g,m,i}$  \underline{ou} $\neg$ (...)
+
+
+Nous définissons $actif_g$ : Un groupe est 'actif' lorsqu'il y a au moins un musicien dedans.
+
+$\forall g,m,i$ . $X_{g,m,i} \rightarrow actif_g \equiv \forall g,m,i : \neg X_{g,m,i} \wedge actif_g$
+
+$\bigwedge \limits_{g}$ $\bigwedge \limits_{m}$ $\bigwedge \limits_{i}$ ( $\neg$ $X_{m,i,g}$ $\wedge actif_g $ )
+ 
+$\bigwedge \limits_{g}$ $actif_g \rightarrow (\bigwedge \limits_{i} \bigvee \limits_{m} X_{m,i,g})$  (groupe complet)
+
+$\equiv \bigwedge \limits_{g} ( \neg actif_g \wedge \bigwedge \limits_{i} \bigvee \limits_{m} X_{m,i,g}) $
+
+$ a \vee () $
+
+
+\subsubsection{Contrainte 6 : Un musicien ne peut pas être dans un groupe pour un instrument qu'il ne sait pas jouer}
+
+
+$\bigwedge \limits_{(i^l, j^l) \in \delta^l}$ $ \neg (\bigvee \limits_{m} \bigwedge \limits_{r=0}^{l} X_{m,i^l,j^l}) $
+$\equiv \bigwedge \limits_{(i^l, j^l) \in \delta^l} \bigwedge \limits_{m} \bigvee \limits_{r=0}^{l} \neg X_{m,i^l,j^l}$
+
+\underline{Pour tout} musicien $m \in M$, \underline{pour tout} groupe $g \in G$ \underline{pour tout} instrument $i \notin instrumentsPlayed(m)$
+
+$\bigwedge \limits_{m}$ $\bigwedge \limits_{g}$ $\bigwedge \limits_{i \notin instrumentsPlayed}$  $\neg$ $X_{m,i,g}$
+ 
+\end{document}
