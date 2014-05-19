@@ -12,7 +12,7 @@ public:
     virtual int encodingX(int musician, int instrument, int group);
     virtual int encodingA(int group);
     virtual int encodingP(int musician, int group);
-    virtual void solve();
+    virtual bool solve();
     virtual void printResult();
     virtual void addAllClauses();
     
@@ -25,11 +25,11 @@ protected:
     int _group_nb;
     
     virtual void aMusicianInMinOneGroupForOneInstrumentWhichHeCanPlay();
+    virtual void defPVariable();
     virtual void aMusicianInMaxOneGroup();
     virtual void aMusicianOnlyOnceInAGroup();
     virtual void maxOneMusicianForOneInstrumentInAGroup();
     virtual void groupFullOrEmpty();
-    virtual void recFunc(int beginIndex, vec<Lit> *currentVec, int maxGroup, int musician);
 };
 
 #endif // PROBLEM_H

@@ -10,7 +10,7 @@ Problem2(parser)
 
 int Problem3::encodingC(int musician, int group)
 {
-    int res = (_musician_nb * _instrument_nb * _group_nb) + (_group_nb) + musician * _group_nb + group;
+    int res = (_musician_nb * _instrument_nb * _group_nb) + (_group_nb) + (_musician_nb * _group_nb) + musician * _group_nb + group;
     return res;
 }
 
@@ -79,6 +79,12 @@ void Problem3::addAllClauses()
         _solver.newVar();
     }
     
+    //ajout des variables P(a,c)
+    for(int i=0; i<_musician_nb * _group_nb; ++i)
+    {
+        _solver.newVar();
+    }
+    
     //ajout des variables C(a,c)
     for(int i=0; i<_group_nb*_musician_nb; ++i)
     {
@@ -87,49 +93,19 @@ void Problem3::addAllClauses()
     
     //contraintes
     
+    aMusicianInMinOneGroupForOneInstrumentWhichHeCanPlayOrToSing();
+    aMusicianOnlyOnceInAGroup();
     maxOneMusicianForOneInstrumentInAGroup();
     groupFullOrEmpty();
-    addC5();
-    addC6();
-    addC7();
-    addC8();
-    addC9();
-    addC10();
+    defPVariable();
+    aMusicianInMaxNGroups();
+    aMusicianCantPlayWithAnInstrumentWhichHeCantPlay();
+    minOneSingerInAllActiveGroups();
+    onlySingerCanSing();
     
 }
 
-
-void Problem3::addC8()
-{
-    //Tous les groupes actifs doivent contenir au moins un chanteur
-    for(int group=0; group<_group_nb; ++group)
-    {
-        vec<Lit> lits;
-        lits.push(~Lit(encodingA(group)));
-        for(int musician=0; musician<_musician_nb; ++musician)
-        {
-            lits.push(Lit(encodingC(musician, group)));
-        }
-        _solver.addClause(lits);
-    }
-}
-
-void Problem3::addC9()
-{
-    //Uniquement les chanteurs peuvent chanter
-    for(int group=0; group<_group_nb; ++group)
-    {
-        for(int musician=0; musician<_musician_nb; ++musician)
-        {
-            if(!dynamic_cast<Parser3*>(_parser)->isSinger(musician))
-            {
-                _solver.addUnit(~Lit(encodingC(musician, group)));
-            }
-        }
-    }
-}
-
-void Problem3::addC10()
+void Problem3::aMusicianInMinOneGroupForOneInstrumentWhichHeCanPlayOrToSing()
 {
     //un musicien est dans au moins un groupe pour un instrument qu'il sait jouer ou pour le chant (ce qui change de Q1, c1)
     for(int musician = 0; musician < _musician_nb; ++musician)
@@ -146,3 +122,35 @@ void Problem3::addC10()
         _solver.addClause(lits);
     }
 }
+
+
+void Problem3::minOneSingerInAllActiveGroups()
+{
+    //Tous les groupes actifs doivent contenir au moins un chanteur
+    for(int group=0; group<_group_nb; ++group)
+    {
+        vec<Lit> lits;
+        lits.push(~Lit(encodingA(group)));
+        for(int musician=0; musician<_musician_nb; ++musician)
+        {
+            lits.push(Lit(encodingC(musician, group)));
+        }
+        _solver.addClause(lits);
+    }
+}
+
+void Problem3::onlySingerCanSing()
+{
+    //Uniquement les chanteurs peuvent chanter
+    for(int group=0; group<_group_nb; ++group)
+    {
+        for(int musician=0; musician<_musician_nb; ++musician)
+        {
+            if(!dynamic_cast<Parser3*>(_parser)->isSinger(musician))
+            {
+                _solver.addUnit(~Lit(encodingC(musician, group)));
+            }
+        }
+    }
+}
+

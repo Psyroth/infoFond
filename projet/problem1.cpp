@@ -7,8 +7,6 @@ _musician_nb(_parser->getMusicianNb()),
 _instrument_nb(_parser->getInstrumentNb()),
 _group_nb(_parser->getGroupNb())
 {
-    std::cout<<"Constructeur 1"<<std::endl;
-    
 }
 
 
@@ -33,17 +31,10 @@ int Problem1::encodingP(int musician, int group)
 }
 
 
-void Problem1::solve()
+bool Problem1::solve()
 {
     _solver.solve();
-    if (_solver.okay())
-    {
-        std::cout<<"Satifaisable"<<std::endl;
-    }
-    else
-    {
-        std::cout<<"Non satisfaisable"<<std::endl;
-    }
+    return _solver.okay();
 }
 
 void Problem1::printResult()
@@ -110,30 +101,13 @@ void Problem1::addAllClauses()
     //contraintes
     
     aMusicianInMinOneGroupForOneInstrumentWhichHeCanPlay();
+    defPVariable();
     aMusicianInMaxOneGroup();
     aMusicianOnlyOnceInAGroup();
     maxOneMusicianForOneInstrumentInAGroup();
     groupFullOrEmpty();
 }
 
-void Problem1::recFunc(int beginIndex, vec<Lit> *currentVec, int maxGroup, int musician)
-{
-    if(currentVec->size() == maxGroup+1)
-    {
-        std::cout<<std::endl;
-        _solver.addClause(*currentVec);
-    }
-    else
-    {
-        for(int group=beginIndex; group<_group_nb; ++group)
-        {
-            currentVec->push(~Lit(encodingP(musician, group)));
-            std::cout<<group;
-            recFunc(group+1, currentVec, maxGroup, musician);
-            currentVec->pop();
-        }
-    }
-}
 
 void Problem1::aMusicianInMinOneGroupForOneInstrumentWhichHeCanPlay()
 {
@@ -152,38 +126,8 @@ void Problem1::aMusicianInMinOneGroupForOneInstrumentWhichHeCanPlay()
     }
 }
 
-void Problem1::aMusicianInMaxOneGroup()
+void Problem1::defPVariable()
 {
-//     //pas deux fois le meme musicien dans 2 groupes differents
-//     
-//     //initialisation du vecteur de coordonnees
-//     //vecteur de tuples ou premier indice = instrument et deuxieme indice = groupe
-//     std::vector< std::vector<int> > coords;
-//     for(int instrument = 0; instrument < _instrument_nb; ++instrument)
-//     {
-//         for(int group = 0; group < _group_nb; ++group)
-//         {
-//             std::vector<int> item_coords;
-//             item_coords.push_back(instrument);
-//             item_coords.push_back(group);
-//             coords.push_back(item_coords);
-//         }
-//         
-//     }
-//     
-//     for(int musician = 0; musician < _musician_nb; ++musician)
-//     {
-//         for(int index1 = 0; index1 < coords.size(); ++index1)
-//         {
-//             for(int index2 = index1+1; index2 < coords.size(); ++index2)
-//             {
-//                 _solver.addBinary(~Lit(encodingX(musician, coords[index1][0], coords[index1][1])), ~Lit(encodingX(musician, coords[index2][0], coords[index2][1])));    
-//             }
-//         }
-//     }
-    
-    
-    
     // def de la variable P qui est vraie si le musicien a est dans le groupe c
     for(int musician=0; musician<_musician_nb; ++musician)
     {
@@ -202,7 +146,10 @@ void Problem1::aMusicianInMaxOneGroup()
             }
         }
     }
-    
+}
+
+void Problem1::aMusicianInMaxOneGroup()
+{ 
     // Un musicien est dans un seul groupe
     for(int musician=0; musician<_musician_nb; ++musician)
     {

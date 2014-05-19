@@ -16,9 +16,9 @@ public:
     virtual void addAllClauses() override;
     
 protected:
-    virtual void addC8();
-    virtual void addC9();
-    virtual void addC10();
+    virtual void aMusicianInMinOneGroupForOneInstrumentWhichHeCanPlayOrToSing();
+    virtual void minOneSingerInAllActiveGroups();
+    virtual void onlySingerCanSing();
 
 };
 

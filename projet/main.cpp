@@ -1,5 +1,5 @@
-#include "parser2.h"
-#include "problem2.h"
+#include "parser3.h"
+#include "problem3.h"
 
 #include <iostream>
 
@@ -17,31 +17,50 @@ int main(int argc, char **argv)
     std::string output(argv[2]);
 
     
-    // Le niveau de syntaxe est donné par le numéro de question : le fichier
-    // exécutable s'appelle QuestionX.bin, avec X compris entre 1 et 4.
-    int syntax_level = 4;   // Tester avec toutes les fonctionnalités
+    int question_number = 3;
 
     if (binary_name.size() >= 13)
     {
         char c = binary_name[binary_name.size()-5];
 
-        if (c == '1') syntax_level = 1;
-        else if (c == '2') syntax_level = 2;
-        else if (c == '3') syntax_level = 3;
-        else if (c == '4') syntax_level = 4;
+        if (c == '1') question_number = 1;
+        else if (c == '2') question_number = 2;
+        else if (c == '3') question_number = 3;
     }
 
     // Parser le fichier de contraintes
-    Parser1 *parser = new Parser2(constraints);
+    Parser1 *parser;
 
     // Résoudre le problème
-    Problem1 *problem = new Problem2(parser);
+    Problem1 *problem;
+    
+    if(question_number == 1)
+    {
+        parser = new Parser1(constraints);
+        problem = new Problem1(parser);
+    }
+    else if(question_number == 2)
+    {
+        parser = new Parser2(constraints);
+        problem = new Problem2(parser);
+    }
+    else if(question_number == 3)
+    {
+        parser = new Parser3(constraints);
+        problem = new Problem3(parser);
+    }
 
     problem->addAllClauses();
-    problem->solve();
-    problem->printResult();
-    
+    if(problem->solve())
+    {
+        std::cout<<"Satisfaisable"<<std::endl;
+        problem->printResult();
+    }
+    else
+    {
+        std::cout<<"Non satisfaisable"<<std::endl;
+    }
+    //     problem.write(output);
     delete problem;
     delete parser;
-//     problem.write(output);
 }

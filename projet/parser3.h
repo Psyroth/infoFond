@@ -10,7 +10,8 @@ public:
     Parser3(std::string constraints);
 
     virtual bool isSinger(int musician);
-    std::vector< int > instrumentsOfUser(int user) override;
+private:
+    std::vector<bool> _singers;
 };
 
 #endif // PARSER3_H

@@ -33,11 +33,38 @@ Parser3::Parser3(std::string constraints)
     
     while (std::getline(infile, line))
     {
+        // Split de la ligne
         std::vector<std::string> splitted_line = split(line, ' ');
+        // Suppression du numero d'utilisateur
         splitted_line.erase(splitted_line.begin());
+        // Groupe max
         _max_group.push_back(atoi(splitted_line[0].c_str()));
         splitted_line.erase(splitted_line.begin());
-        _instruments_played.push_back(convertVecStringToVecInt(splitted_line));
+        // Les instruments joues 
+        std::vector<int> instruments = convertVecStringToVecInt(splitted_line);
+        
+        // Si le dernier instrument est le chant, on le retire de la liste des instruments 
+        // et on met a true la case correspondante au musicien dans le vecteur _singers
+        if(instruments[instruments.size()-1] == _instrument_nb)
+        {
+            _singers.push_back(true);
+            instruments.pop_back();
+        }
+        else
+        {
+            _singers.push_back(false);
+        }
+        _instruments_played.push_back(instruments);
+        // Les instruments non joues
+        std::vector<int> instrumentsNotPlayed;
+        for(int i=0; i<_instrument_nb; ++i)
+        {
+            if(!isInVector(instruments, i))
+            {
+                instrumentsNotPlayed.push_back(i);
+            }
+        }
+        _instruments_not_played.push_back(instrumentsNotPlayed);
         
     }
     
@@ -53,21 +80,7 @@ Parser3::Parser3(std::string constraints)
 
 bool Parser3::isSinger(int musician)
 {
-    bool res = false;
-    if(isInVector(_instruments_played[musician], _instrument_nb))
-    {
-        res = true;
-    }
-    return res;
+    return _singers[musician];
 }
 
-std::vector<int> Parser3::instrumentsOfUser(int user)
-{
-    std::vector<int> res = _instruments_played[user];
-    if(res[res.size()-1] == _instrument_nb)
-    {
-        res.erase(res.begin()+res.size()-1);
-    }
-    return res;
-}
 
