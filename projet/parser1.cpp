@@ -5,8 +5,11 @@
 #include <iostream>
 #include <cstdlib>
 
+Parser1::Parser1()
+{}
 
-Parser1::Parser1(std::string constraints, int syntax_level)
+
+Parser1::Parser1(std::string constraints)
 {
         
     std::ifstream infile(constraints.c_str());

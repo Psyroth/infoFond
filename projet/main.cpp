@@ -32,12 +32,16 @@ int main(int argc, char **argv)
     }
 
     // Parser le fichier de contraintes
-    Parser3 parser(constraints, syntax_level);
+    Parser1 *parser = new Parser2(constraints);
 
     // Résoudre le problème
-    Problem3 problem(parser);
+    Problem1 *problem = new Problem2(parser);
 
-    problem.solve();
-    problem.printResult();
+    problem->addAllClauses();
+    problem->solve();
+    problem->printResult();
+    
+    delete problem;
+    delete parser;
 //     problem.write(output);
 }

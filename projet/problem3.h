@@ -3,30 +3,23 @@
 
 #include "parser3.h"
 #include "minisat/Solver.hpp"
+#include "problem2.h"
 #include <cmath>
 
-class Problem3
+class Problem3 : public Problem2
 {
 public:
-    Problem3(Parser3 parser);
+    Problem3(Parser1 *parser);
     
-    int encodingX(int musician, int instrument, int group);
-    int encodingA(int group);
     int encodingC(int musician, int group);
-    void solve();
-    void printResult();
-    std::vector< int > inc(std::vector< int > tab, int i, int base);
-    bool valid(std::vector<int> tab);
-    bool isInVector(std::vector<int> tab, int elem);
-    std::vector<std::vector<int> > generateVector(int maxGroup, int sizeOfCoordsVector);
+    void printResult() override;
+    virtual void addAllClauses() override;
     
-private:
-    Solver _solver;
-    Parser3 _parser;
-    
-    int _musician_nb;
-    int _instrument_nb;
-    int _group_nb;
+protected:
+    virtual void addC8();
+    virtual void addC9();
+    virtual void addC10();
+
 };
 
 #endif // PROBLEM3_H

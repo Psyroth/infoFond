@@ -6,7 +6,7 @@
 #include <cstdlib>
 
 
-Parser3::Parser3(std::string constraints, int syntax_level)
+Parser3::Parser3(std::string constraints)
 {
         
     std::ifstream infile(constraints.c_str());
@@ -45,73 +45,21 @@ Parser3::Parser3(std::string constraints, int syntax_level)
     std::cout<<instrumentsOfUser(4)[0]<<std::endl;
     
     std::cout<<isSinger(5)<<std::endl;
-    std::cout<<isSinger(19)<<std::endl;
+    std::cout<<isSinger(6)<<std::endl;
     
 }
 
-int Parser3::getMusicianNb()
-{
-    return _musician_nb;
-}
 
-int Parser3::getInstrumentNb()
-{
-    return _instrument_nb;
-}
 
-int Parser3::getGroupNb()
+bool Parser3::isSinger(int musician)
 {
-    return _group_nb;
-}
-
-std::vector<int> Parser3::convertStringToInt(std::vector<std::string> vec)
-{
-    std::vector<int> vec_int;
-    for(std::vector<std::string>::iterator it=vec.begin(); it != vec.end(); ++it)
+    bool res = false;
+    if(isInVector(_instruments_played[musician], _instrument_nb))
     {
-        //on fait -1 car dans le fichier ca commence a 1 et ici on commence a 0
-        vec_int.push_back(atoi(it->c_str())-1);
+        res = true;
     }
-    return vec_int;
+    return res;
 }
-
-
-std::vector<std::string> Parser3::split(std::string s, char delim) {
-    std::vector<std::string> elems;
-    
-    std::string temp;
-    int index = 0;
-    while (index < s.length())
-    {
-        if(s.at(index) == delim)
-        {
-            elems.push_back(temp);
-            temp = "";
-        }
-        else
-        {
-            temp.push_back(s.at(index));
-        }
-        ++index;
-        
-    }
-    elems.push_back(temp);
-    return elems;
-}
-
-std::vector< int > Parser3::instrumentsNotPlayedOfUser(int user)
-{
-    std::vector<int> instrumentsNotPlayedByUser;
-    for(int i=0; i<_instrument_nb; ++i)
-    {
-        if(!isInVector(instrumentsOfUser(user), i))
-        {
-            instrumentsNotPlayedByUser.push_back(i);
-        }
-    }
-    return instrumentsNotPlayedByUser;
-}
-
 
 std::vector<int> Parser3::instrumentsOfUser(int user)
 {
@@ -123,29 +71,3 @@ std::vector<int> Parser3::instrumentsOfUser(int user)
     return res;
 }
 
-int Parser3::maxGroupOfUser(int user)
-{
-    return _max_group[user];
-}
-
-bool Parser3::isInVector(std::vector<int> tab, int elem)
-{
-    for(int i=0; i<tab.size(); ++i)
-    {
-        if(tab[i] == elem)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool Parser3::isSinger(int musician)
-{
-    bool res = false;
-    if(isInVector(_instruments_played[musician], _instrument_nb))
-    {
-        res = true;
-    }
-    return res;
-}

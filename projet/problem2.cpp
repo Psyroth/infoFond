@@ -1,179 +1,11 @@
 #include "problem2.h"
 #include <iostream>
 
-Problem2::Problem2(Parser2 parser):
-_parser(parser),
-_musician_nb(_parser.getMusicianNb()),
-_instrument_nb(_parser.getInstrumentNb()),
-_group_nb(_parser.getGroupNb())
+
+Problem2::Problem2(Parser1* parser):
+Problem1(parser)
 {
-    //ajout des variables X(a,b,c)
-    for(int i=0; i < _musician_nb * _instrument_nb * _group_nb; ++i)
-    {
-        _solver.newVar();
-    }
-    
-    //ajout des variables A(g)
-    for(int i=0; i<_group_nb; ++i)
-    {
-        _solver.newVar();
-    }
-    
-    //contraintes
-    
-    //un musicien est dans au moins un groupe pour un instrument qu'il sait jouer
-    for(int musician = 0; musician < _musician_nb; ++musician)
-    {
-        vec<Lit> lits;
-        for(int group = 0; group < _group_nb; ++group)
-        {
-            for(int indexOfInstrumentList = 0; indexOfInstrumentList < _parser.instrumentsOfUser(musician).size(); ++indexOfInstrumentList)
-            {
-                lits.push(Lit(encodingX(musician, _parser.instrumentsOfUser(musician)[indexOfInstrumentList], group)));
-            }
-        }
-        _solver.addClause(lits);
-    }
-    
-    //pas deux fois le meme musicien dans un meme groupe
-    for(int group = 0; group < _group_nb; ++group)
-    {
-        for(int musician = 0; musician < _musician_nb; ++musician)
-        {
-            //attention, ici, on ajoute peut etre 2 fois les meme clauses, je ne sais pas si c'est un probleme
-            for(int instrument1 = 0; instrument1 < _instrument_nb; ++instrument1)
-            {
-                for(int instrument2 = 0; instrument2 < _instrument_nb; ++instrument2)
-                {
-                    if(instrument1 != instrument2)
-                    {
-                        _solver.addBinary(~Lit(encodingX(musician, instrument1, group)), ~Lit(encodingX(musician, instrument2, group)));
-                    }
-                }
-            }
-        }
-    }
-    
-    //pas deux fois le meme musicien dans 2 groupes differents
-    
-    //initialisation du vecteur de coordonnees
-    //vecteur de tuples ou premier indice = instrument et deuxieme indice = groupe
-    std::vector< std::vector<int> > coords;
-    for(int instrument = 0; instrument < _instrument_nb; ++instrument)
-    {
-        for(int group = 0; group < _group_nb; ++group)
-        {
-            std::vector<int> item_coords;
-            item_coords.push_back(instrument);
-            item_coords.push_back(group);
-            coords.push_back(item_coords);
-        }
-        
-    }
-    
-    //Un musicien peut etre au plus dans k groupes NEW PAR RAPPORT A Q1
-    for(int musician=0; musician<_musician_nb; ++musician)
-    {
-        std::vector<std::vector<int> > aVec = generateVector(_parser.maxGroupOfUser(musician), coords.size());
-        for(int index1=0; index1<aVec.size(); ++index1)
-        {
-            vec<Lit> lits;
-            for(int index2=0; index2<aVec[index1].size(); ++index2)
-            {
-                lits.push(~Lit(encodingX(musician,coords[aVec[index1][index2]][0],coords[aVec[index1][index2]][1])));
-            }
-            _solver.addClause(lits);
-        }
-    }
-    
-    //Un musicien ne peut pas prendre une place pour un instrument qu'il ne joue pas
-    for(int musician=0; musician<_musician_nb; ++musician)
-    {
-        for(int group=0; group<_group_nb; ++group)
-        {
-            std::vector<int> instNotPlayed = _parser.instrumentsNotPlayedOfUser(musician);
-            for(int indexOfInstrumentsNotPlayed=0; indexOfInstrumentsNotPlayed<instNotPlayed.size(); ++indexOfInstrumentsNotPlayed)
-            {
-                _solver.addUnit(~Lit(encodingX(musician, instNotPlayed[indexOfInstrumentsNotPlayed], group)));
-            }
-        }
-    }
-    
-    //pas 2 musiciens pour le meme instrument dans le meme groupe
-    for(int group=0; group<_group_nb; ++group)
-    {
-        for(int instrument=0; instrument<_instrument_nb; ++instrument)
-        {
-            for(int musician1=0; musician1<_musician_nb; ++musician1)
-            {
-                for(int musician2=0; musician2<_musician_nb; ++musician2)
-                {
-                    if(musician1!=musician2)
-                    {
-                        _solver.addBinary(~Lit(encodingX(musician1, instrument, group)), ~Lit(encodingX(musician2, instrument, group)));
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    //tout groupe est complet ou vide
-    for(int group=0; group<_group_nb; ++group)
-    {
-        for(int musician=0; musician<_musician_nb; ++musician)
-        {
-            for(int instrument=0; instrument<_instrument_nb; ++instrument)
-            {
-                _solver.addBinary(~Lit(encodingX(musician, instrument, group)), Lit(encodingA(group)));
-            }
-        }
-    }
-    // partie 2 de "groupes complets ou vides"
-    for(int group=0; group<_group_nb; ++group)
-    {
-        for(int instrument=0; instrument<_instrument_nb; ++instrument)
-        {
-            vec<Lit> lits;
-            lits.push(~Lit(encodingA(group)));
-            for(int musician=0; musician<_musician_nb; ++musician)
-            {
-                lits.push(Lit(encodingX(musician, instrument, group)));
-            }
-            _solver.addClause(lits);
-        }
-    }
-    
-    
-}
-
-
-
-int Problem2::encodingX(int musician, int instrument, int group)
-{
-    int res = _instrument_nb * _group_nb * musician +
-    _group_nb * instrument +
-    group; 
-    return res;
-}
-
-int Problem2::encodingA(int group)
-{
-    int res = (_musician_nb * _instrument_nb * _group_nb) + group;
-    return res;
-}
-
-void Problem2::solve()
-{
-    _solver.solve();
-    if (_solver.okay())
-    {
-        std::cout<<"ok"<<std::endl;
-    }
-    else
-    {
-        std::cout<<"pas ok"<<std::endl;
-    }
+    std::cout<<"Constructeur 2"<<std::endl;
 }
 
 void Problem2::printResult()
@@ -292,4 +124,100 @@ std::vector< std::vector< int > > Problem2::generateVector(int maxGroup, int siz
         ++cpt;
     }
     return res;
+}
+
+void Problem2::addAllClauses()
+{
+    //ajout des variables X(a,b,c)
+    for(int i=0; i < _musician_nb * _instrument_nb * _group_nb; ++i)
+    {
+        _solver.newVar();
+    }
+    
+    //ajout des variables A(g)
+    for(int i=0; i<_group_nb; ++i)
+    {
+        _solver.newVar();
+    }
+    
+    //contraintes
+    addC1();
+    addC3();
+    addC4();
+    addC5();
+    addC6();
+    addC7();
+    
+}
+
+void Problem2::addC5()
+{
+    //pas deux fois le meme musicien dans un meme groupe
+    for(int group = 0; group < _group_nb; ++group)
+    {
+        for(int musician = 0; musician < _musician_nb; ++musician)
+        {
+            //attention, ici, on ajoute peut etre 2 fois les meme clauses, je ne sais pas si c'est un probleme
+            for(int instrument1 = 0; instrument1 < _instrument_nb; ++instrument1)
+            {
+                for(int instrument2 = instrument1+1; instrument2 < _instrument_nb; ++instrument2)
+                {
+                    _solver.addBinary(~Lit(encodingX(musician, instrument1, group)), ~Lit(encodingX(musician, instrument2, group)));
+                }
+            }
+        }
+    }
+}
+
+void Problem2::addC6()
+{
+    std::cout<<"debut c6"<<std::endl;
+    //initialisation du vecteur de coordonnees
+    //vecteur de tuples ou premier indice = instrument et deuxieme indice = groupe
+    std::vector< std::vector<int> > coords;
+    for(int instrument = 0; instrument < _instrument_nb; ++instrument)
+    {
+        for(int group = 0; group < _group_nb; ++group)
+        {
+            std::vector<int> item_coords;
+            item_coords.push_back(instrument);
+            item_coords.push_back(group);
+            coords.push_back(item_coords);
+        }
+        
+    }
+    
+    //Un musicien peut etre au plus dans k groupes NEW PAR RAPPORT A Q1
+    for(int musician=0; musician<_musician_nb; ++musician)
+    {
+        std::vector<std::vector<int> > aVec = generateVector(dynamic_cast<Parser2*>(_parser)->maxGroupOfUser(musician), coords.size());
+        for(int index1=0; index1<aVec.size(); ++index1)
+        {
+            vec<Lit> lits;
+            for(int index2=0; index2<aVec[index1].size(); ++index2)
+            {
+                lits.push(~Lit(encodingX(musician,coords[aVec[index1][index2]][0],coords[aVec[index1][index2]][1])));
+            }
+            _solver.addClause(lits);
+        }
+    }
+    std::cout<<"fin c6"<<std::endl;
+}
+
+void Problem2::addC7()
+{
+    std::cout<<"debut c7"<<std::endl;
+    //Un musicien ne peut pas prendre une place pour un instrument qu'il ne joue pas
+    for(int musician=0; musician<_musician_nb; ++musician)
+    {
+        for(int group=0; group<_group_nb; ++group)
+        {
+            std::vector<int> instNotPlayed = dynamic_cast<Parser2*>(_parser)->instrumentsNotPlayedOfUser(musician);
+            for(int indexOfInstrumentsNotPlayed=0; indexOfInstrumentsNotPlayed<instNotPlayed.size(); ++indexOfInstrumentsNotPlayed)
+            {
+                _solver.addUnit(~Lit(encodingX(musician, instNotPlayed[indexOfInstrumentsNotPlayed], group)));
+            }
+        }
+    }
+    std::cout<<"fin c7"<<std::endl;
 }

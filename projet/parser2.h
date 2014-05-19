@@ -2,29 +2,23 @@
 #define PARSER2_H
 #include <string>
 #include <vector>
+#include "parser1.h"
 
-class Parser2
+class Parser2 : public Parser1
 {
 public:
-    Parser2(std::string constraints, int syntax_level);
-    std::vector<std::string> split(std::string s, char delim);
-    std::vector<int> convertStringToInt(std::vector<std::string> vec);
-    std::vector<int> instrumentsOfUser(int user);
-    std::vector<int> instrumentsNotPlayedOfUser(int user);
-    bool isInVector(std::vector<int> tab, int elem);
+    Parser2();
+    Parser2(std::string constraints);
 
-    int maxGroupOfUser(int user);
+    virtual std::vector<int> instrumentsNotPlayedOfUser(int user);
+    virtual bool isInVector(std::vector<int> tab, int elem);
+
+    virtual int maxGroupOfUser(int user);
+
     
-    int getMusicianNb();
-    int getInstrumentNb();
-    int getGroupNb();
-    
-private:
-    int _musician_nb;
-    int _instrument_nb;
-    int _group_nb;
-    std::vector< std::vector<int> > _instruments_played;
+protected:
     std::vector<int> _max_group;
+    std::vector< std::vector<int> > _instruments_not_played;
 };
 
 #endif // PARSER2_H
