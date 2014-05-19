@@ -1,7 +1,7 @@
-#include "problem2.h"
+#include "problem3.h"
 #include <iostream>
 
-Problem2::Problem2(Parser2 parser):
+Problem3::Problem3(Parser3 parser):
 _parser(parser),
 _musician_nb(_parser.getMusicianNb()),
 _instrument_nb(_parser.getInstrumentNb()),
@@ -19,6 +19,12 @@ _group_nb(_parser.getGroupNb())
         _solver.newVar();
     }
     
+    //ajout des variables C(a,c)
+    for(int i=0; i<_group_nb*_musician_nb; ++i)
+    {
+        _solver.newVar();
+    }
+    
     //contraintes
     
     //un musicien est dans au moins un groupe pour un instrument qu'il sait jouer
@@ -31,6 +37,7 @@ _group_nb(_parser.getGroupNb())
             {
                 lits.push(Lit(encodingX(musician, _parser.instrumentsOfUser(musician)[indexOfInstrumentList], group)));
             }
+            lits.push(Lit(encodingC(musician, group)));
         }
         _solver.addClause(lits);
     }
@@ -145,25 +152,58 @@ _group_nb(_parser.getGroupNb())
     }
     
     
+    
+    
+    //Tous les groupes actifs doivent contenir au moins un chanteur
+    for(int group=0; group<_group_nb; ++group)
+    {
+        vec<Lit> lits;
+        lits.push(~Lit(encodingA(group)));
+        for(int musician=0; musician<_musician_nb; ++musician)
+        {
+            lits.push(Lit(encodingC(musician, group)));
+        }
+        _solver.addClause(lits);
+    }
+    
+    //Uniquement les chanteurs peuvent chanter
+    for(int group=0; group<_group_nb; ++group)
+    {
+        for(int musician=0; musician<_musician_nb; ++musician)
+        {
+            if(!parser.isSinger(musician))
+            {
+                _solver.addUnit(~Lit(encodingC(musician, group)));
+            }
+        }
+    }
+    
+    
 }
 
 
 
-int Problem2::encodingX(int musician, int instrument, int group)
+int Problem3::encodingX(int musician, int instrument, int group)
 {
     int res = _instrument_nb * _group_nb * musician +
-    _group_nb * instrument +
-    group; 
+    _group_nb * instrument + group; 
     return res;
 }
 
-int Problem2::encodingA(int group)
+int Problem3::encodingA(int group)
 {
     int res = (_musician_nb * _instrument_nb * _group_nb) + group;
     return res;
 }
 
-void Problem2::solve()
+int Problem3::encodingC(int musician, int group)
+{
+    int res = (_musician_nb * _instrument_nb * _group_nb) + (_group_nb) + musician * _group_nb + group;
+    return res;
+}
+
+
+void Problem3::solve()
 {
     _solver.solve();
     if (_solver.okay())
@@ -176,7 +216,7 @@ void Problem2::solve()
     }
 }
 
-void Problem2::printResult()
+void Problem3::printResult()
 {
     std::string res;
     for(int group=0; group<_group_nb; ++group)
@@ -211,6 +251,15 @@ void Problem2::printResult()
                 res += "* ";
             }
         }
+        
+        //affichage des chanteurs
+        for(int musician=0; musician<_musician_nb; ++musician)
+        {
+            if(_solver.model[encodingC(musician, group)] == l_True)
+            {
+                res += std::to_string(musician+1) + " ";
+            }
+        }
         res += "\n";
     }
     std::cout<<res<<std::endl;
@@ -218,7 +267,7 @@ void Problem2::printResult()
 
 
 
-std::vector<int> Problem2::inc(std::vector< int > tab, int i, int base)
+std::vector<int> Problem3::inc(std::vector< int > tab, int i, int base)
 {
     if (i < tab.size())
     {
@@ -242,7 +291,7 @@ std::vector<int> Problem2::inc(std::vector< int > tab, int i, int base)
 
 
 
-bool Problem2::valid(std::vector< int > tab)
+bool Problem3::valid(std::vector< int > tab)
 {
     std::vector<int> newTab;
     for(int i=0; i<tab.size(); ++i)
@@ -260,7 +309,7 @@ bool Problem2::valid(std::vector< int > tab)
 }
 
 
-bool Problem2::isInVector(std::vector<int> tab, int elem)
+bool Problem3::isInVector(std::vector<int> tab, int elem)
 {
     for(int i=0; i<tab.size(); ++i)
     {
@@ -272,7 +321,7 @@ bool Problem2::isInVector(std::vector<int> tab, int elem)
     return false;
 }
 
-std::vector< std::vector< int > > Problem2::generateVector(int maxGroup, int sizeOfCoordsVector)
+std::vector< std::vector< int > > Problem3::generateVector(int maxGroup, int sizeOfCoordsVector)
 {
     std::vector< std::vector<int> > res;
     std::vector<int> aVec;
