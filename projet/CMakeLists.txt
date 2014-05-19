@@ -8,8 +8,7 @@ add_executable(proj
     problem1.cpp
     parser2.cpp
     problem2.cpp
-    parser3.cpp
-    problem3.cpp
+    
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")

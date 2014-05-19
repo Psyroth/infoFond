@@ -45,7 +45,7 @@ Parser2::Parser2(std::string constraints)
         _max_group.push_back(atoi(splitted_line[0].c_str()));
         splitted_line.erase(splitted_line.begin());
         // Les instruments joues 
-        std::vector<int> instruments = convertStringToInt(splitted_line);
+        std::vector<int> instruments = convertVecStringToVecInt(splitted_line);
         _instruments_played.push_back(instruments);
         // Les instruments non joues
         std::vector<int> instrumentsNotPlayed;

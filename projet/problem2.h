@@ -19,9 +19,9 @@ public:
     virtual void addAllClauses() override;
     
 protected:
-    virtual void addC5();
-    virtual void addC6();
-    virtual void addC7();
+    virtual void aMusicianInMaxNGroups();
+    virtual void aMusicianCantPlayWithAnInstrumentWhichHeCantPlay();
+    virtual void recFunc(int beginIndex, vec<Lit> *currentVec, int maxGroup, int musician);
 };
 
 #endif // PROBLEM2_H

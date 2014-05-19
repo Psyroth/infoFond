@@ -38,7 +38,7 @@ Parser1::Parser1(std::string constraints)
     {
         std::vector<std::string> splitted_line = split(line, ' ');
         splitted_line.erase(splitted_line.begin());
-        _instruments_played.push_back(convertStringToInt(splitted_line));
+        _instruments_played.push_back(convertVecStringToVecInt(splitted_line));
         
     }
     
@@ -62,7 +62,7 @@ int Parser1::getGroupNb()
     return _group_nb;
 }
 
-std::vector<int> Parser1::convertStringToInt(std::vector<std::string> vec)
+std::vector<int> Parser1::convertVecStringToVecInt(std::vector<std::string> vec)
 {
     std::vector<int> vec_int;
     for(std::vector<std::string>::iterator it=vec.begin(); it != vec.end(); ++it)

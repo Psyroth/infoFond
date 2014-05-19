@@ -87,8 +87,8 @@ void Problem3::addAllClauses()
     
     //contraintes
     
-    addC3();
-    addC4();
+    maxOneMusicianForOneInstrumentInAGroup();
+    groupFullOrEmpty();
     addC5();
     addC6();
     addC7();

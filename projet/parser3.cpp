@@ -37,7 +37,7 @@ Parser3::Parser3(std::string constraints)
         splitted_line.erase(splitted_line.begin());
         _max_group.push_back(atoi(splitted_line[0].c_str()));
         splitted_line.erase(splitted_line.begin());
-        _instruments_played.push_back(convertStringToInt(splitted_line));
+        _instruments_played.push_back(convertVecStringToVecInt(splitted_line));
         
     }
     

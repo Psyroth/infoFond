@@ -9,7 +9,7 @@ public:
     Parser1();
     Parser1(std::string constraints);
     virtual std::vector<std::string> split(std::string s, char delim);
-    virtual std::vector<int> convertStringToInt(std::vector<std::string> vec);
+    virtual std::vector<int> convertVecStringToVecInt(std::vector<std::string> vec);
     virtual std::vector<int> instrumentsOfUser(int user);
     
     virtual int getMusicianNb();
