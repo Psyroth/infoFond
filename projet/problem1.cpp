@@ -59,11 +59,6 @@ void Problem1::printResult()
                 }
                 if(musicians_for_instrument_in_group.size() > 1)
                 {
-                    std::cout<<"Plusieurs musiciens possibles pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
-                    for(std::vector<int>::iterator it=musicians_for_instrument_in_group.begin(); it!=musicians_for_instrument_in_group.end(); ++it)
-                    {
-                        std::cout<<(*it)+1<<std::endl;
-                    }
                     res += "* ";
                 }
                 else if(musicians_for_instrument_in_group.size() == 1)
@@ -72,7 +67,6 @@ void Problem1::printResult()
                 }
                 else// == 0
                 {
-                    std::cout<<"Pas de musicien pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
                     res += "* ";
                 }
             }
@@ -84,7 +78,6 @@ void Problem1::printResult()
         res = "Non Satisfaisable";
     }
     _finalResult = res;
-    std::cout<<res<<std::endl;
 }
 
 void Problem1::write(std::string output)
@@ -99,7 +92,6 @@ void Problem1::write(std::string output)
 
 void Problem1::addAllClauses()
 {
-    std::cout<<"Add all causes 1"<<std::endl;
     //ajout des variables X(a,b,c)
     for(int i=0; i < _musician_nb * _instrument_nb * _group_nb; ++i)
     {

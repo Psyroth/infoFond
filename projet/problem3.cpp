@@ -4,7 +4,6 @@
 Problem3::Problem3(Parser1* parser):
 Problem2(parser)
 {
-    std::cout<<"Constructeur 3"<<std::endl;
 }
 
 
@@ -18,55 +17,57 @@ int Problem3::encodingC(int musician, int group)
 void Problem3::printResult()
 {
     std::string res;
-    for(int group=0; group<_group_nb; ++group)
+    if(_solver.okay())
     {
-        res += "Groupe " + std::to_string(group+1) + " : ";
-        for(int instrument=0; instrument<_instrument_nb; ++instrument)
+        res += "Satisfaisable \n";
+        for(int group=0; group<_group_nb; ++group)
         {
-            std::vector<int> musicians_for_instrument_in_group;
+            res += "Groupe " + std::to_string(group+1) + " : ";
+            for(int instrument=0; instrument<_instrument_nb; ++instrument)
+            {
+                std::vector<int> musicians_for_instrument_in_group;
+                for(int musician=0; musician<_musician_nb; ++musician)
+                {
+                    if(_solver.model[encodingX(musician, instrument, group)] == l_True)
+                    {
+                        musicians_for_instrument_in_group.push_back(musician);
+                    }
+                }
+                if(musicians_for_instrument_in_group.size() > 1)
+                {
+                    res += "* ";
+                }
+                else if(musicians_for_instrument_in_group.size() == 1)
+                {
+                    res += std::to_string(musicians_for_instrument_in_group[0]+1) + " ";
+                }
+                else// == 0
+                {
+                    res += "* ";
+                }
+            }
+            
+            //affichage des chanteurs
             for(int musician=0; musician<_musician_nb; ++musician)
             {
-                if(_solver.model[encodingX(musician, instrument, group)] == l_True)
+                if(_solver.model[encodingC(musician, group)] == l_True)
                 {
-                    musicians_for_instrument_in_group.push_back(musician);
+                    res += std::to_string(musician+1) + " ";
                 }
             }
-            if(musicians_for_instrument_in_group.size() > 1)
-            {
-                std::cout<<"Plusieurs musiciens possibles pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
-                for(std::vector<int>::iterator it=musicians_for_instrument_in_group.begin(); it!=musicians_for_instrument_in_group.end(); ++it)
-                {
-                    std::cout<<(*it)+1<<std::endl;
-                }
-                res += "* ";
-            }
-            else if(musicians_for_instrument_in_group.size() == 1)
-            {
-                res += std::to_string(musicians_for_instrument_in_group[0]+1) + " ";
-            }
-            else// == 0
-            {
-                std::cout<<"Pas de musicien pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
-                res += "* ";
-            }
+            res += "\n";
         }
-        
-        //affichage des chanteurs
-        for(int musician=0; musician<_musician_nb; ++musician)
-        {
-            if(_solver.model[encodingC(musician, group)] == l_True)
-            {
-                res += std::to_string(musician+1) + " ";
-            }
-        }
-        res += "\n";
     }
-    std::cout<<res<<std::endl;
+    else
+    {
+        res = "Non Satisfaisable";
+    }
+    _finalResult = res;
+    
 }
 
 void Problem3::addAllClauses()
 {
-    std::cout<<"Add all causes 3"<<std::endl;
     //ajout des variables X(a,b,c)
     for(int i=0; i < _musician_nb * _instrument_nb * _group_nb; ++i)
     {

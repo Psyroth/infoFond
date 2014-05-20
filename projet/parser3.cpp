@@ -23,7 +23,6 @@ Parser3::Parser3(std::string constraints)
         std::cout<<"ERROR"<<std::endl;
     } 
     
-    std::cout<<a<<", "<<b<<", "<<c<<std::endl;
     
     _musician_nb = a;
     _instrument_nb = b-1;//car on enleve le chant
@@ -67,12 +66,6 @@ Parser3::Parser3(std::string constraints)
         _instruments_not_played.push_back(instrumentsNotPlayed);
         
     }
-    
-    std::cout<<_instruments_played[0][0]<<std::endl;
-    std::cout<<instrumentsOfUser(4)[0]<<std::endl;
-    
-    std::cout<<isSinger(5)<<std::endl;
-    std::cout<<isSinger(6)<<std::endl;
     
 }
 

@@ -5,7 +5,6 @@
 Problem2::Problem2(Parser1* parser):
 Problem1(parser)
 {
-    std::cout<<"Constructeur 2"<<std::endl;
 }
 
 void Problem2::addAllClauses()

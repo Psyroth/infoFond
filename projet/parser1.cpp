@@ -26,7 +26,6 @@ Parser1::Parser1(std::string constraints)
         std::cout<<"ERROR"<<std::endl;
     } 
     
-    std::cout<<a<<", "<<b<<", "<<c<<std::endl;
     
     _musician_nb = a;
     _instrument_nb = b;
@@ -42,8 +41,6 @@ Parser1::Parser1(std::string constraints)
         
     }
     
-    std::cout<<_instruments_played[0][0]<<std::endl;
-    std::cout<<instrumentsOfUser(4)[0]<<std::endl;
     
 }
 
