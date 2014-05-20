@@ -51,16 +51,9 @@ int main(int argc, char **argv)
     }
 
     problem->addAllClauses();
-    if(problem->solve())
-    {
-        std::cout<<"Satisfaisable"<<std::endl;
-        problem->printResult();
-    }
-    else
-    {
-        std::cout<<"Non satisfaisable"<<std::endl;
-    }
-    //     problem.write(output);
+    problem->solve();
+    problem->printResult();
+    problem->write(output);
     delete problem;
     delete parser;
 }

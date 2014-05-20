@@ -14,6 +14,7 @@ public:
     virtual int encodingP(int musician, int group);
     virtual bool solve();
     virtual void printResult();
+    virtual void write(std::string output);
     virtual void addAllClauses();
     
 protected:
@@ -23,6 +24,7 @@ protected:
     int _musician_nb;
     int _instrument_nb;
     int _group_nb;
+    std::string _finalResult;
     
     virtual void aMusicianInMinOneGroupForOneInstrumentWhichHeCanPlay();
     virtual void defPVariable();

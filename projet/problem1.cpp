@@ -1,5 +1,6 @@
 #include "problem1.h"
 #include <iostream>
+#include <fstream>
 
 Problem1::Problem1(Parser1 *parser):
 _parser(parser),
@@ -40,42 +41,61 @@ bool Problem1::solve()
 void Problem1::printResult()
 {
     std::string res;
-    for(int group=0; group<_group_nb; ++group)
+    if(_solver.okay())
     {
-        res += "Groupe " + std::to_string(group+1) + " : ";
-        for(int instrument=0; instrument<_instrument_nb; ++instrument)
+        res += "Satisfaisable \n";
+        for(int group=0; group<_group_nb; ++group)
         {
-            std::vector<int> musicians_for_instrument_in_group;
-            for(int musician=0; musician<_musician_nb; ++musician)
+            res += "Groupe " + std::to_string(group+1) + " : ";
+            for(int instrument=0; instrument<_instrument_nb; ++instrument)
             {
-                if(_solver.model[encodingX(musician, instrument, group)] == l_True)
+                std::vector<int> musicians_for_instrument_in_group;
+                for(int musician=0; musician<_musician_nb; ++musician)
                 {
-                    musicians_for_instrument_in_group.push_back(musician);
+                    if(_solver.model[encodingX(musician, instrument, group)] == l_True)
+                    {
+                        musicians_for_instrument_in_group.push_back(musician);
+                    }
+                }
+                if(musicians_for_instrument_in_group.size() > 1)
+                {
+                    std::cout<<"Plusieurs musiciens possibles pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
+                    for(std::vector<int>::iterator it=musicians_for_instrument_in_group.begin(); it!=musicians_for_instrument_in_group.end(); ++it)
+                    {
+                        std::cout<<(*it)+1<<std::endl;
+                    }
+                    res += "* ";
+                }
+                else if(musicians_for_instrument_in_group.size() == 1)
+                {
+                    res += std::to_string(musicians_for_instrument_in_group[0]+1) + " ";
+                }
+                else// == 0
+                {
+                    std::cout<<"Pas de musicien pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
+                    res += "* ";
                 }
             }
-            if(musicians_for_instrument_in_group.size() > 1)
-            {
-                std::cout<<"Plusieurs musiciens possibles pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
-                for(std::vector<int>::iterator it=musicians_for_instrument_in_group.begin(); it!=musicians_for_instrument_in_group.end(); ++it)
-                {
-                    std::cout<<(*it)+1<<std::endl;
-                }
-                res += "* ";
-            }
-            else if(musicians_for_instrument_in_group.size() == 1)
-            {
-                res += std::to_string(musicians_for_instrument_in_group[0]+1) + " ";
-            }
-            else// == 0
-            {
-                std::cout<<"Pas de musicien pour la place : groupe("<<group+1<<"), "<<instrument+1<<")"<<std::endl;
-                res += "* ";
-            }
+            res += "\n";
         }
-        res += "\n";
     }
+    else
+    {
+        res = "Non Satisfaisable";
+    }
+    _finalResult = res;
     std::cout<<res<<std::endl;
 }
+
+void Problem1::write(std::string output)
+{
+    std::ofstream outputFile;
+    outputFile.open(output);
+    outputFile << _finalResult;
+    outputFile.close();
+}
+
+
 
 void Problem1::addAllClauses()
 {
